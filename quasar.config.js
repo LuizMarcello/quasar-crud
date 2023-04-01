@@ -64,8 +64,7 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       env: {
         API_URL: ctx.dev ?
-          'http://localhost:3000':
-          'http://localhost:3000'
+          'http://localhost:3000' : 'http://localhost:3000'
       }
       // vueRouterBase,
       // vueDevtools,
@@ -112,7 +111,10 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        'Notify',
+        'Dialog'
+      ]
     },
 
     // animations: 'all', // --- includes all animations

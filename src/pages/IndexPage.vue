@@ -1,7 +1,20 @@
 <!-- eslint-disable -->
 <template>
   <q-page padding>
-    <q-table title="Treats" :rows="postss" :columns="coolumns" row-key="name" />
+    <q-table title="Treats" :rows="postss" :columns="coolumns" row-key="name">
+      <!-- Quer dizer: Quero mudar o conteúdo da coluna com nome "actions" -->
+      <template v-slot:body-cell-actions="prrops">
+        <q-td :props="prrops">
+          <q-btn
+            icon="'delete"
+            color="negative"
+            dense
+            size="sm"
+            @click="handleDeletePost(prrops.row.id)"
+          />
+        </q-td>
+      </template>
+    </q-table>
   </q-page>
 </template>
 
@@ -9,7 +22,10 @@
 /* eslint-disable */
 import { defineComponent, ref, onMounted } from "vue";
 /* Consumindo a api diretamente aqui neste componente */
-import { api } from "boot/axios";
+//import { api } from "boot/axios";
+/* Agora Importando do "service" criado */
+import postsService from "src/services/poosts";
+import { useQuasar } from "quasar";
 
 export default defineComponent({
   name: "IndexPage",
@@ -17,6 +33,7 @@ export default defineComponent({
   /* Criando as lógicas do componente */
   setup() {
     const postss = ref([]);
+    const { liist, remove } = postsService();
 
     const coolumns = [
       {
@@ -40,26 +57,57 @@ export default defineComponent({
         sortable: true,
         align: "left",
       },
+      {
+        name: "actions",
+        field: "actions",
+        label: "Ações",
+        align: "right",
+      },
     ];
+
+    const $q = useQuasar();
 
     onMounted(() => {
       getPosts();
     });
 
-    /* Uma arrow-function */
+    /* /* Uma arrow-function assincrona */
     /* O método de requisição  */
     const getPosts = async () => {
       try {
-        const { data } = await api.get('postts');
+        const data = await liist();
         postss.value = data;
       } catch (error) {
         console.error(error);
       }
     };
 
+    /* Uma arrow-function assincrona */
+    const handleDeletePost = async (id) => {
+      try {
+        $q.dialog({
+          title: "Remover",
+          message: "Deseja remover este post ?",
+          cancel: true,
+          persistent: true,
+        }).onOk(async () => {
+          await remove(id);
+          $q.notify({
+            message: "Removido com sucesso",
+            icon: "check",
+            color: "positive",
+          });
+          await getPosts();
+        });
+      } catch (error) {
+        $q.notify({ message: "Erro ao apagar o post", icon: "times", color: "negative" });
+      }
+    };
+
     return {
       postss,
       coolumns,
+      handleDeletePost,
     };
   },
 });
