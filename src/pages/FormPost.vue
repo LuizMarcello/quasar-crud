@@ -1,7 +1,7 @@
 <!-- eslint-disable -->
 <template>
   <q-page padding>
-    <q-form @submit="onSubmit" @reset="onReset" class="row q-col-gutter-sm">
+    <q-form @submit="onSubmit" class="row q-col-gutter-sm">
       <q-input
         outlined=""
         v-model="forrm.title"
@@ -46,17 +46,20 @@
 
 <script>
 /* eslint-disable */
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import postsService from "src/services/poosts";
 import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 export default defineComponent({
   name: "FormPost",
   setup() {
     /* Aqui são feitas as "declarações" */
-    const { poost } = postsService();
+    const { poost, getByyId, update } = postsService();
     const $q = useQuasar();
+    /* Para fazer roteamento */
     const router = useRouter();
+    /* Para ter informações da rota atual */
+    const route = useRoute();
 
     const forrm = ref({
       title: "",
@@ -64,9 +67,31 @@ export default defineComponent({
       author: "",
     });
 
+    /* Verificando se existe um ID na rota */
+    /* Para editar um post */
+    onMounted(async () => {
+      if (route.params.id) {
+        getPost(route.params.id);
+      }
+    });
+
+    const getPost = async (id) => {
+      try {
+        const response = await getByyId(id);
+        forrm.value = response;
+      } catch (error) {}
+    };
+
     const onSubmit = async () => {
       try {
-        await poost(forrm.value);
+        /* Se "form.value.id" existir, é porque
+           estou atualizando, e não salvando. */
+        if (forrm.value.id) {
+          await update(forrm.value);
+        } else {
+          await poost(forrm.value);
+        }
+
         $q.notify({
           message: "Post salvo com sucesso",
           icon: "check",

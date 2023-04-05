@@ -6,13 +6,15 @@ export default function postsService() {
     liist,
     poost,
     update,
-    remove
+    remove,
+    getByyId
   } = useApi('postts')
 
   return {
     liist,
     poost,
     update,
-    remove
+    remove,
+    getByyId
   }
 }

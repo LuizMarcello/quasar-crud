@@ -12,7 +12,14 @@
 
       <!-- Quer dizer: Quero mudar o conteúdo da coluna com nome "actions" -->
       <template v-slot:body-cell-actions="prrops">
-        <q-td :props="prrops">
+        <q-td :props="prrops" class="q-gutter-sm">
+          <q-btn
+            icon="'edit"
+            color="info"
+            dense
+            size="sm"
+            @click="handleEditPost(prrops.row.id)"
+          />
           <q-btn
             icon="'delete"
             color="negative"
@@ -34,14 +41,17 @@ import { defineComponent, ref, onMounted } from "vue";
 /* Agora Importando do "service" criado */
 import postsService from "src/services/poosts";
 import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "IndexPage",
 
   /* Criando as lógicas do componente */
   setup() {
+    /* Aqui são feitas as "declarações" */
     const postss = ref([]);
     const { liist, remove } = postsService();
+    const router = useRouter();
 
     const coolumns = [
       {
@@ -108,14 +118,26 @@ export default defineComponent({
           await getPosts();
         });
       } catch (error) {
-        $q.notify({ message: "Erro ao apagar o post", icon: "times", color: "negative" });
+        $q.notify({
+          message: "Erro ao apagar o post",
+          icon: "times",
+          color: "negative",
+        });
       }
+    };
+
+    const handleEditPost = async (id) => {
+      router.push({
+        name: "formPost",
+        params: { id },
+      });
     };
 
     return {
       postss,
       coolumns,
       handleDeletePost,
+      handleEditPost
     };
   },
 });
