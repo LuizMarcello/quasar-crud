@@ -9,6 +9,11 @@ const routes = [
         name: "home",
         component: () => import("pages/IndexPage.vue"),
       },
+      {
+        path: "form-post",
+        name: "formPost",
+        component: () => import("pages/FormPost.vue"),
+      },
     ],
   },
 

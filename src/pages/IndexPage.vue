@@ -1,7 +1,15 @@
 <!-- eslint-disable -->
 <template>
   <q-page padding>
-    <q-table title="Treats" :rows="postss" :columns="coolumns" row-key="name">
+    <q-table title="Artigos" :rows="postss" :columns="coolumns" row-key="name">
+      <template v-slot:top>
+        <span class="text-h5">Artigos</span>
+        <q-space />
+        <!-- Aqui neste botão, quando clicar no botão, eu posso enviar
+             diretamente para uma rota, sem precisar criar algum método -->
+        <q-btn color="primary" label="Novo" :to="{ name: 'formPost' }" />
+      </template>
+
       <!-- Quer dizer: Quero mudar o conteúdo da coluna com nome "actions" -->
       <template v-slot:body-cell-actions="prrops">
         <q-td :props="prrops">

@@ -4,14 +4,14 @@ import useApi from 'src/composables/UseApi'
 export default function postsService() {
   const {
     liist,
-    post,
+    poost,
     update,
     remove
   } = useApi('postts')
 
   return {
     liist,
-    post,
+    poost,
     update,
     remove
   }

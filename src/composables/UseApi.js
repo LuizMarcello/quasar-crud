@@ -17,7 +17,7 @@ export default function useApi(url) {
   }
 
   /* Uma arrow-function assincrona */
-  const post = async (form) => {
+  const poost = async (form) => {
     try {
       const {
         data
@@ -54,7 +54,7 @@ export default function useApi(url) {
 
   return {
     liist,
-    post,
+    poost,
     update,
     remove
   }
